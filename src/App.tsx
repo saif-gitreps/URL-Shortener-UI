@@ -1,10 +1,10 @@
-import { Home } from "./pages";
 import useAuthStore from "./store/authStore";
+import { Outlet } from "react-router-dom";
 
 function App() {
    return (
       <div>
-         <h1>React App</h1>
+         <Outlet />
       </div>
    );
 }
