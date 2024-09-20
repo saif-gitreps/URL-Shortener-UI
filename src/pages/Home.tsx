@@ -16,6 +16,16 @@ function Home() {
    const [urls, setUrls] = useState<UrlData[]>([
       { shortId: "abc123", redirectUrl: "https://example.com", clicks: 10 },
       { shortId: "xyz456", redirectUrl: "https://google.com", clicks: 25 },
+      { shortId: "abc123", redirectUrl: "https://example.com", clicks: 10 },
+      { shortId: "xyz456", redirectUrl: "https://google.com", clicks: 25 },
+      { shortId: "abc123", redirectUrl: "https://example.com", clicks: 10 },
+      { shortId: "xyz456", redirectUrl: "https://google.com", clicks: 25 },
+      { shortId: "abc123", redirectUrl: "https://example.com", clicks: 10 },
+      { shortId: "xyz456", redirectUrl: "https://google.com", clicks: 25 },
+      { shortId: "abc123", redirectUrl: "https://example.com", clicks: 10 },
+      { shortId: "xyz456", redirectUrl: "https://google.com", clicks: 25 },
+      { shortId: "abc123", redirectUrl: "https://example.com", clicks: 10 },
+      { shortId: "xyz456", redirectUrl: "https://google.com", clicks: 25 },
    ]);
 
    const handleDelete = (shortId: string) => {
@@ -25,7 +35,6 @@ function Home() {
    return (
       <div className="flex flex-col justify-center mt-20 space-y-8">
          <div className="max-w-md mx-auto space-y-4 bg-gray-100 p-12 shadow-md rounded-lg">
-            <h1 className="text-xl font-bold">URL shortener</h1>
             <input
                type="text"
                placeholder="Ex: https://example.com"
@@ -78,7 +87,7 @@ function Home() {
             )}
          </div>
 
-         <div className="max-w-4xl mx-auto overflow-x-auto">
+         <div className="max-w-4xl mx-auto ">
             <table className="table-auto w-full border-collapse bg-white shadow-md">
                <thead>
                   <tr className="bg-gray-200 text-left">
@@ -106,18 +115,18 @@ function Home() {
                         <td className="px-4 py-2 border">{url.clicks}</td>
                         <td className="px-4 py-2 border">
                            <button
-                              className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
-                              onClick={() => handleDelete(url.shortId)}
-                           >
-                              Delete
-                           </button>
-                        </td>
-                        <td className="px-4 py-2 border">
-                           <button
                               className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded"
                               onClick={() => handleDelete(url.shortId)}
                            >
                               <Link to={`/${url.shortId}/analytics`}>Analytics</Link>
+                           </button>
+                        </td>
+                        <td className="px-4 py-2 border">
+                           <button
+                              className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded"
+                              onClick={() => handleDelete(url.shortId)}
+                           >
+                              Delete
                            </button>
                         </td>
                      </tr>
