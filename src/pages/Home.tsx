@@ -21,7 +21,12 @@ function Home() {
       { shortId: "abc123", redirectUrl: "https://example.com", clicks: 10 },
       { shortId: "xyz456", redirectUrl: "https://google.com", clicks: 25 },
       { shortId: "abc123", redirectUrl: "https://example.com", clicks: 10 },
-      { shortId: "xyz456", redirectUrl: "https://google.com", clicks: 25 },
+      {
+         shortId: "xyz456",
+         redirectUrl:
+            "https://goooooooooooooooooooooooogggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggle.com",
+         clicks: 25,
+      },
       { shortId: "abc123", redirectUrl: "https://example.com", clicks: 10 },
       { shortId: "xyz456", redirectUrl: "https://google.com", clicks: 25 },
       { shortId: "abc123", redirectUrl: "https://example.com", clicks: 10 },
@@ -87,8 +92,8 @@ function Home() {
             )}
          </div>
 
-         <div className="max-w-4xl mx-auto ">
-            <table className="table-auto w-full border-collapse bg-white shadow-md">
+         <div className="max-w-4xl mx-auto">
+            <table className="  w-full border-collapse bg-white shadow-md">
                <thead>
                   <tr className="bg-gray-200 text-left">
                      <th className="px-4 py-2 border">Sr. No</th>
@@ -103,15 +108,23 @@ function Home() {
                   {urls.map((url, index) => (
                      <tr key={url.shortId} className="">
                         <td className="px-4 py-2 border">{index + 1}</td>
-                        <td className="px-4 py-2 border">
+                        <td className="px-2 py-2 flex space-x-1 border-t-2">
                            <Link
                               to={`/${url.shortId}`}
-                              className="text-blue-700 font-semibold ml-2"
+                              className="text-blue-700 font-semibold hover:underline"
                            >
                               {url.shortId}
                            </Link>
+                           <img
+                              src="copy.png"
+                              alt="cpy"
+                              className="w-4 h-4 hover:cursor-pointer hover:opacity-30"
+                              onClick={() => navigator.clipboard.writeText(url.shortId)}
+                           />
                         </td>
-                        <td className="px-4 py-2 border">{url.redirectUrl}</td>
+                        <td className="px-4 py-2 border max-w-96 break-words">
+                           {url.redirectUrl}
+                        </td>
                         <td className="px-4 py-2 border">{url.clicks}</td>
                         <td className="px-4 py-2 border">
                            <button
