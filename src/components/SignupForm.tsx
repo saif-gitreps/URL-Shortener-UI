@@ -1,5 +1,7 @@
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import authService from "../services/authServices";
+import { useMutation } from "@tanstack/react-query";
 
 type FormData = {
    name: string;
@@ -14,8 +16,12 @@ function SignupForm() {
       formState: { errors },
    } = useForm<FormData>();
 
+   const signupMutation = useMutation({
+      mutationFn: async (data: FormData) => await authService.signup(data),
+   });
+
    const onSubmit = (data: FormData) => {
-      console.log(data);
+      signupMutation.mutate(data);
    };
 
    return (
@@ -34,7 +40,7 @@ function SignupForm() {
          <div className="flex flex-col">
             <label>Name:</label>
             <input
-               className="border"
+               className="border px-2 rounded"
                {...register("name", {
                   required: "Name is required",
                   minLength: {
@@ -49,7 +55,7 @@ function SignupForm() {
          <div className="flex flex-col">
             <label>Email:</label>
             <input
-               className="border"
+               className="border px-2 rounded"
                {...register("email", {
                   required: "Email is required",
                   pattern: {
@@ -64,7 +70,7 @@ function SignupForm() {
          <div className="flex flex-col">
             <label>Password:</label>
             <input
-               className="border"
+               className="border px-2 rounded"
                type="password"
                {...register("password", {
                   required: "Password is required",
@@ -77,7 +83,21 @@ function SignupForm() {
             {errors.password && <p className="text-red-600">{errors.password.message}</p>}
          </div>
 
+         {signupMutation.isError && (
+            <p className="text-red-600">{signupMutation.error.message}</p>
+         )}
+
+         {signupMutation.isSuccess && (
+            <p className="text-green-700">
+               Signup successful. Please{" "}
+               <Link to="/login" className="text-blue-700 font-medium">
+                  Login
+               </Link>
+            </p>
+         )}
+
          <button
+            disabled={signupMutation.isPending || signupMutation.isSuccess}
             type="submit"
             className="w-full bg-blue-700 hover:bg-blue-800 text-white rounded-md py-1"
          >

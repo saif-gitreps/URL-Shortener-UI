@@ -1,5 +1,8 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import authService from "../services/authServices";
+import useAuthStore from "../store/authStore";
+import { useMutation } from "@tanstack/react-query";
 
 type FormData = {
    email: string;
@@ -7,14 +10,25 @@ type FormData = {
 };
 
 function LoginForm() {
+   const navigate = useNavigate();
    const {
       register,
       handleSubmit,
       formState: { errors },
    } = useForm<FormData>();
 
+   const loginMutation = useMutation({
+      mutationFn: async (data: FormData) => {
+         return await authService.login(data);
+      },
+      onSuccess: (user) => {
+         useAuthStore.getState().login(user);
+         navigate("/");
+      },
+   });
+
    const onSubmit = (data: FormData) => {
-      console.log(data);
+      loginMutation.mutate(data);
    };
 
    return (
@@ -23,16 +37,19 @@ function LoginForm() {
          className="bg-gray-100 max-w-96 p-12 shadow-md space-y-2 rounded-lg"
       >
          <h1 className="text-xl font-bold">Login</h1>
+
          <div>
-            Dont have an account?{" "}
-            <Link to={"/signup"} className="text-blue-700">
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-blue-700">
                Signup
             </Link>
          </div>
+
          <div className="flex flex-col">
-            <label>Email:</label>
+            <label htmlFor="email">Email:</label>
             <input
-               className="border"
+               id="email"
+               className="border px-2 rounded"
                {...register("email", {
                   required: "Email is required",
                   pattern: {
@@ -45,9 +62,10 @@ function LoginForm() {
          </div>
 
          <div className="flex flex-col">
-            <label>Password:</label>
+            <label htmlFor="password">Password:</label>
             <input
-               className="border"
+               id="password"
+               className="border px-2 rounded"
                type="password"
                {...register("password", {
                   required: "Password is required",
@@ -60,11 +78,16 @@ function LoginForm() {
             {errors.password && <p className="text-red-600">{errors.password.message}</p>}
          </div>
 
+         {loginMutation.isError && (
+            <p className="text-red-600">{loginMutation.error.message}</p>
+         )}
+
          <button
             type="submit"
-            className="w-full bg-blue-700 hover:bg-blue-800 text-white rounded-md py-1"
+            disabled={loginMutation.isPending}
+            className="w-full bg-blue-700 hover:bg-blue-800 text-white rounded-md py-2 mt-4"
          >
-            Login
+            {loginMutation.isPending ? "Loading..." : "Login"}
          </button>
       </form>
    );
