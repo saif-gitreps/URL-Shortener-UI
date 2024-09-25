@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 type State = {
-   user: {
+   user?: {
       _id: string;
       name: string;
       email: string;

@@ -1,24 +1,52 @@
 import { useForm } from "react-hook-form";
+import useAuthStore from "../store/authStore";
+import { useMutation } from "@tanstack/react-query";
+import authServices from "../services/authServices";
 
 type ProfileModalProps = {
    closeModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type FormData = {
-   name: string;
-   email: string;
-   password: string;
+   name?: string;
+   email?: string;
+   password?: string;
 };
 
 function ProfileModal({ closeModal }: ProfileModalProps) {
+   const user = useAuthStore((state) => state.user);
+
    const {
       register,
       handleSubmit,
       formState: { errors },
-   } = useForm<FormData>();
+   } = useForm<FormData>({
+      defaultValues: {
+         name: user?.name,
+         email: user?.email,
+      },
+   });
 
+   // Mutation for updating user profile
+   const {
+      mutate: updateUser,
+      error: updateError,
+      isError: isUpdateError,
+      isSuccess,
+   } = useMutation({
+      mutationFn: async (data: FormData) => await authServices.updateUser(data),
+      onSuccess: () => {
+         // Optionally show success feedback or close modal
+         closeModal(false);
+      },
+      onError: (error) => {
+         console.error("Update error: ", error);
+      },
+   });
+
+   // Submit handler
    const onSubmit = (data: FormData) => {
-      console.log(data);
+      updateUser(data);
    };
 
    return (
@@ -27,6 +55,8 @@ function ProfileModal({ closeModal }: ProfileModalProps) {
 
          <div className="relative w-11/12 max-w-lg p-6 bg-white rounded-lg shadow-md z-10 space-y-3">
             <h1 className="text-2xl font-bold">Profile</h1>
+
+            {/* Profile form */}
             <form
                onSubmit={handleSubmit(onSubmit)}
                className="shadow-md space-y-2 rounded-lg"
@@ -78,6 +108,18 @@ function ProfileModal({ closeModal }: ProfileModalProps) {
                      <p className="text-red-600">{errors.password.message}</p>
                   )}
                </div>
+
+               {/* Error Handling for API */}
+               {isUpdateError && (
+                  <p className="text-red-600">
+                     {updateError?.message || "Failed to update profile"}
+                  </p>
+               )}
+
+               {/* Success Feedback */}
+               {isSuccess && (
+                  <p className="text-green-600">Profile updated successfully!</p>
+               )}
 
                <div>
                   <button
