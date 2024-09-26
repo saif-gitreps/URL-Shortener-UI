@@ -15,6 +15,7 @@ type FormData = {
 
 function ProfileModal({ closeModal }: ProfileModalProps) {
    const user = useAuthStore((state) => state.user);
+   const login = useAuthStore((state) => state.login);
 
    const {
       register,
@@ -35,8 +36,8 @@ function ProfileModal({ closeModal }: ProfileModalProps) {
       isSuccess,
    } = useMutation({
       mutationFn: async (data: FormData) => await authServices.updateUser(data),
-      onSuccess: () => {
-         // Optionally show success feedback or close modal
+      onSuccess: (updatedUserData) => {
+         login(updatedUserData);
          closeModal(false);
       },
       onError: (error) => {
@@ -53,14 +54,11 @@ function ProfileModal({ closeModal }: ProfileModalProps) {
       <div className="fixed inset-0 z-50 flex items-center justify-center">
          <div className="absolute inset-0 bg-black opacity-50"></div>
 
-         <div className="relative w-11/12 max-w-lg p-6 bg-white rounded-lg shadow-md z-10 space-y-3">
+         <div className="relative w-11/12 max-w-lg p-6 bg-white rounded-lg z-10 space-y-3">
             <h1 className="text-2xl font-bold">Profile</h1>
 
             {/* Profile form */}
-            <form
-               onSubmit={handleSubmit(onSubmit)}
-               className="shadow-md space-y-2 rounded-lg"
-            >
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-2 rounded-lg">
                <div className="flex flex-col">
                   <label>Name:</label>
                   <input
@@ -121,15 +119,15 @@ function ProfileModal({ closeModal }: ProfileModalProps) {
                   <p className="text-green-600">Profile updated successfully!</p>
                )}
 
-               <div>
+               <div className="space-x-1">
                   <button
                      type="submit"
-                     className="w-1/2 bg-blue-700 hover:bg-blue-800 text-white rounded-md py-1 rounded-r-none"
+                     className=" bg-blue-700 hover:bg-blue-800 text-white rounded p-2"
                   >
                      Save
                   </button>
                   <button
-                     className="w-1/2 bg-red-600 hover:bg-red-700 text-white py-1 rounded-md rounded-l-none"
+                     className=" bg-red-600 hover:bg-red-700 text-white p-2 rounded"
                      onClick={() => closeModal(false)}
                   >
                      Close

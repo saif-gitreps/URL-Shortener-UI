@@ -31,7 +31,7 @@ function Header() {
                <div className="flex">
                   <div
                      onClick={() => setIsProfileModalOpen(true)}
-                     className="flex justify-center items-center p-3 rounded space-x-2 cursor-pointer hover:bg-gray-100"
+                     className="flex justify-center items-center p-3 rounded space-x-2 cursor-pointer hover:opacity-60"
                   >
                      <img src="/user.png" alt="" className="h-6 w-6" />
                      <p className="font-bold">Profile</p>

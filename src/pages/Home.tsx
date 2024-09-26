@@ -3,15 +3,9 @@ import { Link } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 import { UrlTable } from "../components";
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import urlServices from "../services/urlServices";
 import config from "../config/config";
-
-type UrlData = {
-   shortId: string;
-   redirectUrl: string;
-   clicks: number;
-};
 
 type FormData = {
    url: string;
@@ -20,30 +14,36 @@ type FormData = {
 
 function Home() {
    const isAuthenticated: boolean = useAuthStore((state) => state.isAuthenticated);
+   const user = useAuthStore((state) => state.user);
    const [randomShortId, setRandomShortId] = useState<string | null>(null);
    const [customShortId, setCustomShortId] = useState<string | null>(null);
-
-   const [urls, setUrls] = useState<UrlData[]>([]);
+   const queryClient = useQueryClient();
 
    const {
       register: registerRandomShortId,
       handleSubmit: handleRandomShortId,
       formState: { errors: randomErrors },
+      reset: resetRandom,
    } = useForm<FormData>();
    const {
       register: registerCustomShortId,
       handleSubmit: handleSubmitCustomShortId,
       formState: { errors: customErrors },
+      reset: resetCustom,
    } = useForm<FormData>();
 
    const {
       mutate: generateRandomShortId,
       error: randomError,
       isError: isRandomError,
+      isPending: isRandomPending,
    } = useMutation({
       mutationFn: async (data: FormData) => await urlServices.generateRandomShortId(data),
       onSuccess: (data) => {
          setRandomShortId(config.apiBaseUrl + "/" + data);
+         if (user !== null && user?._id)
+            queryClient.invalidateQueries({ queryKey: ["urls", user?._id] });
+         resetRandom();
       },
       onError: (error) => {
          console.error("Random short URL error: ", error);
@@ -54,10 +54,14 @@ function Home() {
       mutate: generateCustomShortId,
       error: customError,
       isError: isCustomError,
+      isPending: isCustomPending,
    } = useMutation({
       mutationFn: async (data: FormData) => await urlServices.generateCustomShortId(data),
       onSuccess: (data) => {
          setCustomShortId(config.apiBaseUrl + "/" + data);
+         if (user !== null && user?._id)
+            queryClient.invalidateQueries({ queryKey: ["urls", user?._id] });
+         resetCustom();
       },
       onError: (error) => {
          console.error("Custom short URL error: ", error);
@@ -72,10 +76,6 @@ function Home() {
    const onCustomShortIdSubmit = (data: FormData) => {
       setCustomShortId(null);
       generateCustomShortId(data);
-   };
-
-   const handleDelete = (shortId: string) => {
-      setUrls(urls.filter((url: UrlData) => url.shortId !== shortId));
    };
 
    return (
@@ -97,10 +97,13 @@ function Home() {
                )}
 
                <button
+                  disabled={isRandomPending}
                   type="submit"
                   className="w-full bg-blue-700 hover:bg-blue-800 text-white rounded py-1"
                >
-                  Generate a random short URL
+                  {isRandomPending
+                     ? "Generating. Please wait server is loading"
+                     : "Generate a random short URL"}
                </button>
 
                {isRandomError && <p className="text-red-500">{randomError.message}</p>}
@@ -156,8 +159,11 @@ function Home() {
                   <button
                      type="submit"
                      className="w-full bg-blue-700 hover:bg-blue-800 text-white rounded py-1"
+                     disabled={isCustomPending}
                   >
-                     Generate a custom short URL
+                     {isCustomPending
+                        ? "Generating. Please wait server is loading"
+                        : "Generate a custom short URL"}
                   </button>
 
                   {isCustomError && <p className="text-red-500">{customError.message}</p>}
@@ -193,7 +199,7 @@ function Home() {
             )}
          </div>
 
-         {isAuthenticated && <UrlTable urls={urls} handleDelete={handleDelete} />}
+         {isAuthenticated && <UrlTable />}
       </div>
    );
 }

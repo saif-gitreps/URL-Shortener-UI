@@ -1,5 +1,6 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosError } from "axios";
+import { AxiosResponse, AxiosError } from "axios";
 import config from "../config/config";
+import { AuthService } from "./authServices";
 
 interface ApiError {
    message: string;
@@ -10,21 +11,10 @@ interface Url {
    shortId?: string;
 }
 
-class UrlServices {
-   private api: AxiosInstance;
+class UrlServices extends AuthService {
    constructor() {
-      this.api = axios.create({
-         baseURL: config.apiBaseUrl,
-         withCredentials: true,
-      });
-   }
-
-   private handleApiError(error: AxiosError<ApiError>): Error {
-      if (error.response?.data) {
-         console.log("API Error response:", error.response.data);
-         return new Error(error.response.data.message);
-      }
-      return new Error("An unexpected error occurred");
+      super();
+      this.api.defaults.baseURL = config.apiBaseUrl;
    }
 
    async generateRandomShortId(url: Url): Promise<string> {

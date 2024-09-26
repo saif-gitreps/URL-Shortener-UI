@@ -11,6 +11,7 @@ type FormData = {
 
 function LoginForm() {
    const navigate = useNavigate();
+   const login = useAuthStore((state) => state.login);
    const {
       register,
       handleSubmit,
@@ -18,11 +19,10 @@ function LoginForm() {
    } = useForm<FormData>();
 
    const loginMutation = useMutation({
-      mutationFn: async (data: FormData) => {
-         return await authService.login(data);
-      },
-      onSuccess: (user) => {
-         useAuthStore.getState().login(user);
+      mutationFn: async (data: FormData) => await authService.login(data),
+      onSuccess: async () => {
+         const user = await authService.getCurrentUser();
+         login(user);
          navigate("/");
       },
    });

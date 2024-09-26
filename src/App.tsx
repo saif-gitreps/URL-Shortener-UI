@@ -16,9 +16,12 @@ function App() {
    } = useQuery({
       queryKey: ["currentUser"],
       queryFn: async () => await authServices.getCurrentUser(),
-      retry: false,
       refetchOnWindowFocus: false,
-      staleTime: 1000 * 60 * 14 + 1000 * 50,
+      refetchOnReconnect: true,
+      refetchInterval(query) {
+         return query.isStale() ? 1000 * 60 * 10 : false;
+      },
+      staleTime: 1000 * 60 * 15,
    });
 
    useEffect(() => {

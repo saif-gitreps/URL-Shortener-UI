@@ -37,8 +37,8 @@ interface ApiError {
    message: string;
 }
 
-class AuthService {
-   private api: AxiosInstance;
+export class AuthService {
+   api: AxiosInstance;
    private refreshPromise: Promise<void> | null = null;
 
    constructor() {
@@ -75,7 +75,7 @@ class AuthService {
       );
    }
 
-   private handleApiError(error: AxiosError<ApiError>): Error {
+   protected handleApiError(error: AxiosError<ApiError>): Error {
       if (error.response?.data) {
          console.log("API Error response:", error.response.data);
          return new Error(error.response.data.message);
@@ -91,13 +91,9 @@ class AuthService {
       }
    }
 
-   async login(credentials: LoginCredentials): Promise<User> {
+   async login(credentials: LoginCredentials): Promise<void> {
       try {
-         const response: AxiosResponse<{ user: User }> = await this.api.post(
-            "/login",
-            credentials
-         );
-         return response.data.user;
+         await this.api.post("/login", credentials);
       } catch (error) {
          throw this.handleApiError(error as AxiosError<ApiError>);
       }
@@ -125,6 +121,7 @@ class AuthService {
          const response: AxiosResponse<{ user: User }> = await this.api.get(
             "/current-user"
          );
+
          return response.data.user;
       } catch (error) {
          if (axios.isAxiosError(error) && error.response?.status === 401) {
@@ -133,9 +130,14 @@ class AuthService {
          throw this.handleApiError(error as AxiosError<ApiError>);
       }
    }
-   async updateUser(updateData: UpdateUserData): Promise<void> {
+   async updateUser(updateData: UpdateUserData): Promise<User> {
       try {
-         await this.api.put("/update-user", updateData);
+         const response: AxiosResponse<{ user: User }> = await this.api.put(
+            "/update",
+            updateData
+         );
+
+         return response.data.user;
       } catch (error) {
          throw this.handleApiError(error as AxiosError<ApiError>);
       }
