@@ -1,14 +1,7 @@
-import axios, {
-   AxiosInstance,
-   AxiosResponse,
-   AxiosError,
-   InternalAxiosRequestConfig,
-} from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import config from "../config/config";
-
-interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
-   _retry?: boolean;
-}
+import { BaseService } from "./baseServices";
+import useAuthStore from "../store/authStore";
 
 interface SignupData {
    name: string;
@@ -37,42 +30,9 @@ interface ApiError {
    message: string;
 }
 
-export class AuthService {
-   api: AxiosInstance;
-   private refreshPromise: Promise<void> | null = null;
-
+export class AuthService extends BaseService {
    constructor() {
-      this.api = axios.create({
-         baseURL: config.apiBaseUrl + "/auth",
-         withCredentials: true,
-      });
-
-      this.api.interceptors.response.use(
-         (response) => response,
-         async (error: AxiosError<ApiError>) => {
-            const originalRequest = error.config as CustomAxiosRequestConfig;
-
-            if (error.response?.status === 401 && !originalRequest._retry) {
-               originalRequest._retry = true;
-
-               if (!this.refreshPromise) {
-                  this.refreshPromise = this.refreshToken().finally(() => {
-                     this.refreshPromise = null;
-                  });
-               }
-
-               try {
-                  await this.refreshPromise;
-                  return this.api(originalRequest);
-               } catch (refreshError) {
-                  // If refresh token fails, logout the user
-                  await this.logout();
-                  throw refreshError;
-               }
-            }
-            return Promise.reject(error);
-         }
-      );
+      super(config.apiBaseUrl + "/api/auth");
    }
 
    protected handleApiError(error: AxiosError<ApiError>): Error {
@@ -99,37 +59,21 @@ export class AuthService {
       }
    }
 
-   async logout(): Promise<void> {
-      try {
-         await this.api.post("/logout");
-      } catch (error) {
-         console.error("Logout failed", error);
-         throw this.handleApiError(error as AxiosError<ApiError>);
-      }
-   }
-
-   async refreshToken(): Promise<void> {
-      try {
-         await this.api.post("/refresh-token");
-      } catch (error) {
-         throw this.handleApiError(error as AxiosError<ApiError>);
-      }
-   }
-
    async getCurrentUser(): Promise<User | null> {
       try {
          const response: AxiosResponse<{ user: User }> = await this.api.get(
             "/current-user"
          );
-
          return response.data.user;
       } catch (error) {
          if (axios.isAxiosError(error) && error.response?.status === 401) {
+            useAuthStore.getState().logout();
             return null;
          }
          throw this.handleApiError(error as AxiosError<ApiError>);
       }
    }
+
    async updateUser(updateData: UpdateUserData): Promise<User> {
       try {
          const response: AxiosResponse<{ user: User }> = await this.api.put(

@@ -1,6 +1,6 @@
-import { AxiosResponse, AxiosError } from "axios";
+import axios, { AxiosResponse, AxiosError, AxiosInstance } from "axios";
 import config from "../config/config";
-import { AuthService } from "./authServices";
+import { BaseService } from "./baseServices";
 
 interface ApiError {
    message: string;
@@ -11,10 +11,15 @@ interface Url {
    shortId?: string;
 }
 
-class UrlServices extends AuthService {
+class UrlServices extends BaseService {
+   private baseApiUrl: AxiosInstance;
+
    constructor() {
-      super();
-      this.api.defaults.baseURL = config.apiBaseUrl;
+      super(config.apiBaseUrl + "/api/url");
+
+      this.baseApiUrl = axios.create({
+         baseURL: config.apiBaseUrl,
+      });
    }
 
    async generateRandomShortId(url: Url): Promise<string> {
@@ -43,7 +48,7 @@ class UrlServices extends AuthService {
 
    async redirectToOriginalUrl(shortId: string): Promise<void> {
       try {
-         await this.api.get(`/${shortId}`);
+         await this.baseApiUrl.get(`/${shortId}`);
       } catch (error) {
          throw this.handleApiError(error as AxiosError<ApiError>);
       }

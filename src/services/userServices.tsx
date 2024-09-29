@@ -1,6 +1,6 @@
 import { AxiosResponse, AxiosError } from "axios";
 import config from "../config/config";
-import { AuthService } from "./authServices";
+import { BaseService } from "./baseServices";
 
 interface ApiError {
    message: string;
@@ -14,10 +14,9 @@ interface Url {
    visitCount: number;
 }
 
-class UserServices extends AuthService {
+class UserServices extends BaseService {
    constructor() {
-      super();
-      this.api.defaults.baseURL = config.apiBaseUrl + "/user";
+      super(config.apiBaseUrl + "/api/user");
    }
 
    async getAllUrls(): Promise<Url[] | []> {

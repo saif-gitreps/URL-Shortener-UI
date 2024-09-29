@@ -100,7 +100,11 @@ function UrlTable() {
                            src="copy.png"
                            alt="cpy"
                            className="w-4 h-4 hover:cursor-pointer hover:opacity-30"
-                           onClick={() => navigator.clipboard.writeText(url.shortId)}
+                           onClick={() =>
+                              navigator.clipboard.writeText(
+                                 config.apiBaseUrl + "/" + url.shortId
+                              )
+                           }
                         />
                      </td>
 
