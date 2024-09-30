@@ -74,7 +74,6 @@ function UrlTable() {
          <table className="w-full border-collapse bg-white shadow-md mb-20">
             <thead>
                <tr className="bg-gray-200 text-left">
-                  <th className="px-4 py-2 border">Sr. No</th>
                   <th className="px-4 py-2 border">ShortId</th>
                   <th className="px-4 py-2 border">Redirect URL</th>
                   <th className="px-4 py-2 border">Clicks</th>
@@ -86,8 +85,6 @@ function UrlTable() {
             <tbody>
                {sortedUrls?.map((url, index) => (
                   <tr key={index} className="">
-                     <td className="px-4 py-2 border">{index + 1}</td>
-
                      <td className="py-4 px-4 space-x-1 border-t-2 flex items-center">
                         <Link
                            to={config.apiBaseUrl + "/" + url.shortId}

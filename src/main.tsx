@@ -35,7 +35,7 @@ const router = createBrowserRouter([
             ),
          },
          {
-            path: "/url-analytics/:_id",
+            path: "/:shortId/analytics",
             element: (
                <AuthLayout authentication>
                   <UrlAnalytics />

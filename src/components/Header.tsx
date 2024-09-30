@@ -23,7 +23,7 @@ function Header() {
                className="font-bold text-xl text-center flex items-center hover:cursor-pointer hover:opacity-60"
                onClick={() => navigate("/")}
             >
-               <img src="url.png" alt="" className="w-10 h-10" />
+               <img src="/url.png" alt="" className="w-10 h-10" />
                Shortener
             </h1>
 

@@ -11,6 +11,20 @@ interface Url {
    shortId?: string;
 }
 
+interface UrlAnalytic {
+   url: string;
+   createdAt: Date;
+   redirectURL: string;
+   shortId: string;
+   browser?: string;
+   os?: string;
+   device: string;
+   country?: string;
+   region?: string;
+   city?: string;
+   referrer?: string;
+}
+
 class UrlServices extends BaseService {
    private baseApiUrl: AxiosInstance;
 
@@ -62,7 +76,17 @@ class UrlServices extends BaseService {
       }
    }
 
-   // Todo add analyitcs api for each shortId.
+   async getAnalytics(shortId: string): Promise<UrlAnalytic[]> {
+      try {
+         const response: AxiosResponse<{ analytics: UrlAnalytic[] }> = await this.api.get(
+            `/${shortId}/analytics`
+         );
+
+         return response.data.analytics;
+      } catch (error) {
+         throw this.handleApiError(error as AxiosError<ApiError>);
+      }
+   }
 }
 
 export default new UrlServices();
