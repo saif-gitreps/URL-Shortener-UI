@@ -79,7 +79,7 @@ function Home() {
    };
 
    return (
-      <div className="flex flex-col justify-center mt-20 space-y-8">
+      <div className="flex flex-col justify-center mt-5 space-y-8">
          <div className="max-w-md mx-auto space-y-4 bg-gray-100 p-12 shadow-md rounded-lg">
             <form
                onSubmit={handleRandomShortId(onRandomShortIdSubmit)}

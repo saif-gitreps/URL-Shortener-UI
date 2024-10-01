@@ -53,7 +53,6 @@ export class BaseService {
 
    protected handleApiError(error: AxiosError<ApiError>): Error {
       if (error.response?.data) {
-         console.error("API Error response:", error.response.data.message);
          return new Error(error.response.data.message);
       }
       return new Error("An unexpected error occurred");
@@ -70,8 +69,7 @@ export class BaseService {
 
          return this.csrfToken;
       } catch (error) {
-         console.error("Failed to fetch CSRF token:", error);
-         throw new Error("Failed to fetch CSRF token");
+         throw this.handleApiError(error as AxiosError<ApiError>);
       }
    }
 
@@ -110,7 +108,6 @@ export class BaseService {
          );
          this.csrfToken = null;
       } catch (error) {
-         console.error("Logout failed", error);
          throw this.handleApiError(error as AxiosError<ApiError>);
       }
    }
