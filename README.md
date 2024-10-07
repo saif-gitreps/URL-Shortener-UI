@@ -25,6 +25,7 @@ A modern, simple, and easy-to-use UI utilizing all the API features.
 - 📁 Seamless integration of data fetching and mutations using **Tanstack React Query** and **Axios**.
 - 🚀 Efficient cache system and cache invalidation using **Tanstack React Query**.
 - 🛠 Smooth handling of JWT access token refresh for authenticated users using **Axios** API response interceptors.
+- 📁 Simple Auth state management using **Zustand**. 
 
 🎁 **Additional Features**
 - 🔄 Highly customizable and extendable, with more features planned for future updates.
