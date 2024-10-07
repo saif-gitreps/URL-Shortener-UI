@@ -1,50 +1,30 @@
-# React + TypeScript + Vite
+# UI for URL Shortener Web Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, simple, and easy-to-use UI utilizing all the API features.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+🎨 **Clean UI and simple UX**
+- 🛠 Clean, modern design and effective UI built with **React** and **Tailwind CSS**.
 
-## Expanding the ESLint configuration
+🛒 **Integrated crucial functionality from the APIs**
+- Users can:
+  - Create ShortId URLs without needing to register.
+  - Authenticated users can:
+    - Create custom ShortIds.
+    - Keep track of their URLs and view detailed analytics for each ShortId.
+    - Delete ShortIds.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+🔐 **Authentication and security**
+- JWT authentication using HTTP-only cookies.
+- CSRF protection with the **Double-submit cookie** pattern, using **Axios** API request interceptors for each POST request.
 
-- Configure the top-level `parserOptions` property like this:
+💻 **Tech Stack**
+- 🖥 Fully written in **TypeScript** for type safety and scalability.
+- 📜 Utilizes **React Hook Form** for strict frontend input validation and error handling.
+- 📁 Seamless integration of data fetching and mutations using **Tanstack React Query** and **Axios**.
+- 🚀 Efficient cache system and cache invalidation using **Tanstack React Query**.
+- 🛠 Smooth handling of JWT access token refresh for authenticated users using **Axios** API response interceptors.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+🎁 **Additional Features**
+- 🔄 Highly customizable and extendable, with more features planned for future updates.
